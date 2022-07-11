@@ -9,9 +9,11 @@ db = client.asm
 
 filename = sys.argv[1]
 scan_id = sys.argv[2]
-#collection = db[sys.argv[3]]
-collection = db[filename.split('.')[0].split("/")[-1]]
+collection_name = filename.split('.')[0].split("/")[-1]
+collection = db[collection_name]
 target_id = sys.argv[3]
+
+scan_meta = {'scan_id':scan_id, 'target_id':target_id}
 
 def jsonf_to_lines(filename):
     parsed_lines = []
@@ -27,3 +29,5 @@ def jsonf_to_lines(filename):
     return parsed_lines
 
 collection.insert_many(jsonf_to_lines(filename))
+if collection_name == "subs":
+    db.scans.insert_one(scan_meta)

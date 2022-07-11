@@ -11,11 +11,16 @@ r = redis.Redis(host='localhost', port=6379, db=0)
 client = MongoClient("mongodb://127.0.0.1:27017")
 db = client.asm
 
-@app.route("/subdomains")
-def get_subdomains():
-    req = request.args.get('target')
-    query = {'target_id':req}
-    res = db.subs.find(query)
+@app.route("/api/<target>/<datatype>")
+def get_subdomains(target, datatype):
+    scan_id = request.args.get("scan_id")
+    query = {'target_id':target}
+
+    if scan_id != None:
+        query['scan_id'] = scan_id
+
+    collection = db[datatype]
+    res = collection.find(query)
     data = []
 
     for row in res:
@@ -24,32 +29,6 @@ def get_subdomains():
 
     return jsonify(data)
 
-@app.route("/http")
-def get_http():
-    req = request.args.get('target')
-    query = {'target_id':req}
-    res = db.http.find(query)
-    data = []
-
-    for row in res:
-        row.pop('_id')
-        data.append(row)
-
-    return jsonify(data)
-
-
-@app.route("/dns")
-def get_dns():
-    req = request.args.get('target')
-    query = {'target_id':req}
-    res = db.dnsx.find(query)
-    data = []
-
-    for row in res:
-        row.pop('_id')
-        data.append(row)
-
-    return jsonify(data)
 
 
 @app.route("/start_scan")
