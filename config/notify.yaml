@@ -1,0 +1,6 @@
+slack:
+  - id: "slack"
+    slack_channel: "hacking"
+    slack_username: "pdiscovery"
+    slack_format: "{{data}}"
+    slack_webhook_url: "https://hooks.slack.com/services/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"
