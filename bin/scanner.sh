@@ -18,7 +18,8 @@ cp "$ppath/scope/$1" "$scan_path/scope.txt"
 
 echo "$ppath"
 
-cat scope.txt | subfinder -json -o subs.json | jq --unbuffered -r '.host' | dnsx -json -o dnsx.json | jq --unbuffered -r '.host' | httpx -json -o http.json | nuclei -o nuclei.txt -severity info,low,medium,high,critical -t ~/nuclei-templates --stats | notify -pc "$ppath/config/notify.yaml" -mf "New vuln found! {{data}}"
+cat scope.txt | subfinder -json -o subs.json | jq --unbuffered -r '.host' | dnsx -json -o dnsx.json | jq --unbuffered -r '.host' | httpx -json -o http.json | jq --unbuffered -r '.url' | nuclei -o nuclei.json -json -severity low -t ~/nuclei-templates --stats | jq -c --unbuffered 'del(.timestamp) | del(."curl-command")' | anew "$raw_path/nuclei.json" | notify -pc "$ppath/config/notify.yaml" -mf "New vuln found! {{data}}"
+
 cat dnsx.json | jq -r '.host' | tlsx -json -o tls.json
 
 find "$scan_path" -type f -name "*.json" -exec "$ppath/bin/import.py" {} "$scan_id" "$target_id" \;
@@ -31,4 +32,3 @@ notify -bulk -i "$raw_path/urls.txt.new"  -pc "$ppath/config/notify.yaml" -mf "N
 
 cat dnsx.json | jq -r '.host' | anew "$raw_path/resolved.txt"
 cat dnsx.json | jq -r '.a?[]?' | anew "$raw_path/ips.txt"
-cat nuclei.txt | anew "$raw_path/nuclei.txt"
