@@ -14,6 +14,24 @@ Next, modify config/notify.yaml to include your slack webhook.
 Navigate to the bin directory and inspect the docker-compose.yml to make sure everything looks like your setup. You'll want to modify the volumes so that you can map to your local axiom setup.
 
 ```
+services:
+  redis:
+    image: redis
+  mongo:
+    image: mongo
+  worker:
+    image: proteus/worker
+    build:
+      context: bin/worker/
+    volumes:
+      - /home/op/.axiom/accounts/personal.json:/root/.axiom/accounts/default.json # map your account here 
+      - /home/op/.axiom/modules:/root/.axiom/modules # map modules
+      - /home/op/.ssh:/root/.ssh # map SSH
+      - /mnt/volume_nyc3_01/docs/proteus:/app # map path to local app (for persistence of data like rawdata & scans, not 100% necessary but nice to have.
+```
+
+
+```
 cd bin/
 sudo docker compose build
 sudo docker compose up
@@ -24,7 +42,6 @@ Thats it!
 # Usage
 All fleets are unique to each target, so there is no crossover of data. You can either spin up instances and then launch scans, in which case, the instances will remain after, or you can just launch scans. If you launch a scan without any instances prensent, it will spin up 5 instances by default and then autoremove them when its done.
 
-Somebody really should throw this into a python or go cli client huh?
 ```
 curl -s http://127.0.0.1:80/api/<target>/launch_scan
 curl -s http://127.0.0.1:80/api/<target>/launch_scan?spinup=8
@@ -44,6 +61,8 @@ curl -s http://127.0.0.1:80/api/<target>/<datatype>?scan_id=<scan_id>
 ```
 
 # Client Usage
+The client will tabulate data, todo: added JSON or text output.
+
 ```
 pip3 install -r bin/client/requirements.txt
 
