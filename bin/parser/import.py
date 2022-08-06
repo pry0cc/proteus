@@ -29,5 +29,14 @@ def jsonf_to_lines(filename):
     return parsed_lines
 
 collection.insert_many(jsonf_to_lines(filename))
-if collection_name == "subs":
+res = db.scans.find({'scan_id':scan_id})
+
+i = 0
+for row in res:
+    i += 1
+
+if i < 1:
     db.scans.insert_one(scan_meta)
+
+
+

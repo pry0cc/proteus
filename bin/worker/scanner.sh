@@ -4,7 +4,9 @@ PATH="$PATH:/root/.axiom/interact:/root/go/bin"
 
 echo "Scanning $1"
 
-target_id="$1"
+target_id="$(echo $1 | cut -d: -f 1)"
+instances="$(echo $1 | cut -d: -f 2)"
+module="$(echo $1 | cut -d: -f 3)"
 ppath="/app"
 scan_id="$target_id-$(date +%s)"
 scan_path="$ppath/scans/$scan_id"
@@ -16,13 +18,18 @@ mkdir -p "$scan_path"
 mkdir -p "$raw_path"
 
 cd "$scan_path"
-cp "$ppath/scope/$1" "$scan_path/scope.txt"
+cp "$ppath/scope/$target_id" "$scan_path/scope.txt"
 
 echo "$ppath"
 
-axiom-account personal
-#axiom-scan scope.txt --fleet asm -m asm -o asm 
-axiom-scan scope.txt --fleet asm -m asm -o asm --spinup 5 --rm-when-done
+if [ "$instances" -gt "0" ]; then
+    axiom-scan scope.txt -m "$module" -o asm --fleet "$target_id" --spinup "$instances" --rm-when-done
+else
+    if [ "$(axiom-ls "$target_id*" | wc -l | awk '{ print $1 }')" -lt "2" ]; then
+    	axiom-scan scope.txt -m "$module" -o asm --fleet "$target_id" --spinup 5 --rm-when-done
+    fi 
+    axiom-scan scope.txt -m "$module" -o asm --fleet "$target_id"
+fi
 
 #cat scope.txt | subfinder -json -o subs.json | jq --unbuffered -r '.host' | dnsx -json -o dnsx.json | jq --unbuffered -r '.host' | httpx -json -o http.json | jq --unbuffered -r '.url' | nuclei -o nuclei.json -json -severity low,medium,high,critical -t ~/nuclei-templates --stats | jq -c --unbuffered 'del(.timestamp) | del(."curl-command")' | anew "$raw_path/nuclei.json" | notify -pc "$ppath/config/notify.yaml" -mf "New vuln found! {{data}}"
 

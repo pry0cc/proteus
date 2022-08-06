@@ -30,13 +30,36 @@ def get_subdomains(target, datatype):
     return jsonify(data)
 
 
-
 @app.route("/api/<target>/launch_scan")
 def start_scan(target):
+    instances = request.args.get("spinup")
+    module = request.args.get("module")
     req = target
 
-    r.rpush('queue', req)
+    if instances == None:
+        instances = "0"
+
+    if module == None:
+        module="asm"
+
+    r.rpush('queue', req+":"+str(instances)+":"+str(module))
 
     data = {"message":"Scan launched!"}
+    return jsonify(data)
+
+
+@app.route("/api/<target>/spinup")
+def spinup(target):
+    instances = request.args.get("instances")
+    req = target
+
+    if instances == None:
+        instances = "3"
+    
+    module = "spinup"
+
+    r.rpush('queue', req+":"+str(instances)+":"+module)
+
+    data = {"message":"Fleet queued for initializing!"}
     return jsonify(data)
 
