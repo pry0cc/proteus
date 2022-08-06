@@ -1,4 +1,5 @@
 config/notify.yaml
 bin/__pycache__
 config/*
+notify.yaml
 

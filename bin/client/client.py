@@ -9,6 +9,14 @@ class ProteusClient:
     def __init__(self, url):
         self.url = url
 
+    def start_scan(self, target, module="asm", spinup=0):
+        url = self.gen_url(target, "launch_scan")
+        url += "?module="+module
+        url += "&spinup="+str(spinup)
+
+        r = requests.get(url)
+        return r.json()
+
     def tabulate(self, json_resp):
         print(tabulate(json_resp, headers="keys", tablefmt="presto"))
 
@@ -65,11 +73,15 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--target', help='Get target of choice')
 parser.add_argument('--type', help='Get datatype of choice')
 parser.add_argument('--scanid', default="", help='Limit results to a scan_id datatype of choice')
+parser.add_argument('--start_scan', action="store_true", help='Limit results to a scan_id datatype of choice')
 
 args = parser.parse_args()
 
 client = ProteusClient("http://127.0.0.1:80/api")
 
+
+if args.start_scan:
+    client.start_scan(args.target)
 
 if args.type == "http":
     client.http(args.target, args.scanid)
