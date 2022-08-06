@@ -11,6 +11,7 @@ WORKDIR /root/.axiom
 RUN git clone https://github.com/pry0cc/axiom /root/.axiom/
 RUN  wget -q -O /tmp/doctl.tar.gz https://github.com/digitalocean/doctl/releases/download/v1.66.0/doctl-1.66.0-linux-amd64.tar.gz && tar -xvzf /tmp/doctl.tar.gz && mv doctl /usr/bin/doctl && rm /tmp/doctl.tar.gz
 RUN interact/axiom-configure --config "{}" --unattended
+RUN /usr/local/go/bin/go install -v github.com/projectdiscovery/notify/cmd/notify@latest
 
 RUN git clone https://github.com/pry0cc/proteus /app && cd /app 
 RUN pip3 install -r /app/bin/worker/requirements.txt

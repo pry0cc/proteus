@@ -43,3 +43,14 @@ curl -s http://127.0.0.1:80/api/<target>/nuclei
 curl -s http://127.0.0.1:80/api/<target>/<datatype>?scan_id=<scan_id>
 ```
 
+# Client Usage
+```
+pip3 install -r bin/client/requirements.txt
+
+bin/client/client.py --target <target> --type http
+bin/client/client.py --target <target> --type dns
+bin/client/client.py --target <target> --type host
+bin/client/client.py --target <target> --type scans
+
+bin/client/client.py --target <target> --type scans --scanid <scan_id>
+```
