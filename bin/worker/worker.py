@@ -5,11 +5,11 @@ import time
 import subprocess
 import threading
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+r = redis.Redis(host='redis', port=6379, db=0)
 
 def scan(target_id):
     print(target_id)
-    subprocess.call(['sh', 'bin/scanner.sh', target_id])
+    subprocess.call(['sh', '/app/bin/worker/scanner.sh', target_id])
 
 while True:
     res = r.rpop('queue')

@@ -7,8 +7,8 @@ from flask import request
 from flask import jsonify
 app = Flask(__name__)
 
-r = redis.Redis(host='localhost', port=6379, db=0)
-client = MongoClient("mongodb://127.0.0.1:27017")
+r = redis.Redis(host='redis', port=6379, db=0)
+client = MongoClient("mongodb://mongo:27017")
 db = client.asm
 
 @app.route("/api/<target>/<datatype>")
@@ -31,9 +31,9 @@ def get_subdomains(target, datatype):
 
 
 
-@app.route("/start_scan")
-def start_scan():
-    req = request.args.get('target')
+@app.route("/api/<target>/launch_scan")
+def start_scan(target):
+    req = target
 
     r.rpush('queue', req)
 

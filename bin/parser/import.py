@@ -4,7 +4,7 @@ import sys
 import json
 from pymongo import MongoClient
 
-client = MongoClient("mongodb://127.0.0.1:27017")
+client = MongoClient("mongodb://mongo:27017")
 db = client.asm
 
 filename = sys.argv[1]
