@@ -31,21 +31,20 @@ else
     axiom-scan scope.txt -m "$module" -o asm --fleet "$target_id"
 fi
 
-#cat scope.txt | subfinder -json -o subs.json | jq --unbuffered -r '.host' | dnsx -json -o dnsx.json | jq --unbuffered -r '.host' | httpx -json -o http.json | jq --unbuffered -r '.url' | nuclei -o nuclei.json -json -severity low,medium,high,critical -t ~/nuclei-templates --stats | jq -c --unbuffered 'del(.timestamp) | del(."curl-command")' | anew "$raw_path/nuclei.json" | notify -pc "$ppath/config/notify.yaml" -mf "New vuln found! {{data}}"
+# kind of weird logic, but since we're using the asm module, we're basically looking for all the json files inside of the asm directory (and then merging them), finally deleting the asm dir because we merged the data
 
-#cat asm/dnsx.json | jq -r '.host' | tlsx -json -o asm/tls.json
-
+# this might become a huge bottleneck with huge data? idk? hope not.
 find asm/ -type f -name "*.json*" | cut -d '.' -f 1-2 | cut -d '/' -f 2 |  sort -u  | while read src; do cat asm/$src* | sort -u > $src; done
 
 rm -r asm
 
 find "$scan_path" -type f -name "*.json" -exec "$ppath/bin/parser/import.py" {} "$scan_id" "$target_id" \;
 
-cat subs.json | jq -r '.host' | anew "$raw_path/hosts.txt" > "$raw_path/hosts.txt.new"
-notify -bulk -i "$raw_path/hosts.txt.new"  -pc "$ppath/config/notify.yaml" -mf "New Hostnames Found! {{data}}"
+cat host.json | jq -r '.host' | anew "$raw_path/host.txt" > "$raw_path/host.txt.new"
+notify -bulk -i "$raw_path/host.txt.new"  -pc "$ppath/config/notify.yaml" -mf "New Hostnames Found! {{data}}"
 
-cat http.json | jq -r '.url' | anew "$raw_path/urls.txt" > "$raw_path/urls.txt.new"
-notify -bulk -i "$raw_path/urls.txt.new"  -pc "$ppath/config/notify.yaml" -mf "New URLs found! {{data}}"
+cat http.json | jq -r '.url' | anew "$raw_path/url.txt" > "$raw_path/url.txt.new"
+notify -bulk -i "$raw_path/url.txt.new"  -pc "$ppath/config/notify.yaml" -mf "New URLs found! {{data}}"
 
-cat dnsx.json | jq -r '.host' | anew "$raw_path/resolved.txt"
-cat dnsx.json | jq -r '.a?[]?' | anew "$raw_path/ips.txt"
+cat dns.json | jq -r '.host' | anew "$raw_path/resolved.txt"
+cat dns.json | jq -r '.a?[]?' | anew "$raw_path/ips.txt"

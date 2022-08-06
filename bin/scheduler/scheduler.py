@@ -5,7 +5,7 @@ import redis
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-r = redis.Redis(host='localhost', port=6379, db=0)
+r = redis.Redis(host='redis', port=6379, db=0)
 
 scheduler = BlockingScheduler()
 @scheduler.scheduled_job(IntervalTrigger(hours=5))

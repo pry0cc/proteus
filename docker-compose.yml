@@ -6,7 +6,7 @@ services:
   worker:
     image: proteus/worker
     build:
-      context: worker/
+      context: bin/worker/
     volumes:
       - /home/op/.axiom/accounts/personal.json:/root/.axiom/accounts/default.json
       - /home/op/.axiom/modules:/root/.axiom/modules
@@ -18,7 +18,7 @@ services:
   api:
     image: proteus/api
     build:
-      context: api/
+      context: bin/api/
     # flask requires SIGINT to stop gracefully
     # (default stop signal from Compose is SIGTERM)
     stop_signal: SIGINT
