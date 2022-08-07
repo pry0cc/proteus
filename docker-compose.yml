@@ -11,7 +11,7 @@ services:
       - /home/op/.axiom/accounts/personal.json:/root/.axiom/accounts/default.json
       - /home/op/.axiom/modules:/root/.axiom/modules
       - /home/op/.ssh:/root/.ssh
-      - /mnt/volume_nyc3_01/docs/proteus:/app
+      - /home/op/.proteus:/app
     depends_on:
     - redis
     - mongo
