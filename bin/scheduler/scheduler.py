@@ -11,6 +11,6 @@ scheduler = BlockingScheduler()
 @scheduler.scheduled_job(IntervalTrigger(hours=5))
 def queue_job():
     print('queuing!')
-    r.rpush('queue','army')    
+    r.rpush('queue','dod:0:asm')    
 
 scheduler.start()
