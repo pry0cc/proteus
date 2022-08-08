@@ -1,12 +1,13 @@
 # Proteus
-Proteus is an API and Database for Axiom
+Proteus - The axiom database and API https://github.com/pry0cc/axiom. <br>
+Originally, written for [Hacking Together an ASM Platform Using ProjectDiscovery Tools](https://twitter.com/pdiscoveryio/status/1551558898879893506). 
 
 # Setup
 
 First, clone the repository
 ```
-git clone https://github.com/pry0cc/proteus
-cd proteus
+git clone https://github.com/pry0cc/proteus ~/.proteus
+cd ~/.proteus
 ```
 
 Next, modify config/notify.yaml to include your slack webhook.
@@ -27,7 +28,7 @@ services:
       - /home/op/.axiom/accounts/personal.json:/root/.axiom/accounts/default.json # map your account here 
       - /home/op/.axiom/modules:/root/.axiom/modules # map modules
       - /home/op/.ssh:/root/.ssh # map SSH
-      - /mnt/volume_nyc3_01/docs/proteus:/app # map path to local app (for persistence of data like rawdata & scans, not 100% necessary but nice to have.
+      - /home/op/.proteus:/app # map proteus folder to the app (for persistence of data like rawdata & scans), not 100% necessary but nice to have.
 ```
 
 
@@ -40,6 +41,7 @@ sudo docker compose up
 Thats it!
 
 # Usage
+Store your target(s) in the local scope folder ( [~/.proteus/scope/](https://github.com/pry0cc/proteus/tree/main/scope) ) <br>
 All fleets are unique to each target, so there is no crossover of data. You can either spin up instances and then launch scans, in which case, the instances will remain after, or you can just launch scans. If you launch a scan without any instances prensent, it will spin up 5 instances by default and then autoremove them when its done.
 
 ```
