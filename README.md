@@ -12,7 +12,7 @@ cd ~/.proteus
 
 Next, modify config/notify.yaml to include your slack webhook.
 
-Navigate to the bin directory and to modify the docker-compose.yml volumes to map to your local axiom setup. You'll need to change `/home/op/` to whatever your current $HOME directory is.
+Navigate to the bin directory and modify the docker-compose.yml volumes so they map to your local axiom setup. You'll need to change `/home/op/` to whatever your current $HOME directory is.
 
 ```
 services:
