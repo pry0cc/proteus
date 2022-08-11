@@ -1,3 +1,4 @@
 pymongo
 redis
 apscheduler
+streamlit
